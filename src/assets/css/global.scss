@@ -1,0 +1,94 @@
+/* Login and validate Otp Alert Style*/
+.invalid-alert {
+  color: #932037;
+  background-color: #fdd7de;
+  border-color: #fcc3ce;
+  display: flex;
+  justify-content: space-between; /* This moves text and icon to opposite sides */
+  align-items: center;
+}
+
+.success-alert {
+  color: #155724; /* Dark green for text */
+  background-color: #d4edda; /* Light green for background */
+  border-color: #c3e6cb; /* Medium green for border */
+  display: flex;
+  justify-content: space-between; /* This moves text and icon to opposite sides */
+  align-items: center;
+}
+
+
+
+
+// This is css for the modal that require extensive details e.g user,organization
+//2 column grid
+.details-grid {
+  display: grid;
+  grid-template-columns: 2fr 2fr; /* Key takes 1 part, value takes 2 */
+  gap: 10px 20px; /* Adds spacing between rows and columns */
+}
+
+// 3 column grid
+.details-grid3 {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr; /* Key takes 1 part, value takes 2 */
+  gap: 10px 20px; /* Adds spacing between rows and columns */
+}
+
+
+.detail-item {
+  display: contents; /* Allows individual items to flow in grid cells */
+}
+
+.detail-item strong {
+  color: #374151; /* Dark gray for keys */
+  font-weight: 600; /* Stronger emphasis */
+}
+
+.detail-item span {
+  color: #4B5563; /* Medium gray for values */
+  font-weight: 400; /* Subtle contrast for values */
+}
+
+// This is the css for displaying list of data for an item or entity  in a modal for example permissions for one user
+.modal-list-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping of buttons if necessary */
+  gap: 10px; /* Adds space between buttons */
+  justify-content: flex-start; /* Aligns buttons to the left */
+}
+
+.list-button {
+  background-color: white;
+  color: #4B5563; /* Gray text color */
+  padding: 10px 20px;
+  border: 2px solid #E5E7EB; /* Light gray border */
+  border-radius: 30px; /* Rounded corners */
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.list-button:hover {
+  background-color: #F3F4F6; /* Light gray background on hover */
+  border-color: darkcyan;; /* Border changes to a blue shade on hover */
+}
+
+.list-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px darkcyan; /* Adds a focus ring on button */
+}
+
+
+/* Optional fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
