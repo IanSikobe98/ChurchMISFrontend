@@ -90,6 +90,60 @@ export default {
       <!-- Main Navigation Section -->
       <side-menu title="MAIN MENU" :static-item="true"></side-menu>
 
+      <!-- Equipment Menu -->
+      <!--        v-if="canViewUsers"-->
+      <side-menu
+        title="Equipment"
+        icon="toolbox"
+        toggle-id="equipments"
+        :caret-icon="true"
+        :route="{ popup: 'false', to: 'equipment' }"
+        @onClick="toggle"
+        :active="currentRoute.includes('equipment')"
+      >
+
+        <b-collapse
+          tag="ul"
+          class="sub-nav"
+          id="equipments"
+          accordion="sidebar-menu"
+          :visible="currentRoute.includes('equipment')"
+        >
+
+          <side-menu
+            isTag="router-link"
+            title="Create Requisition Request"
+            icon="circle"
+            :icon-size="10"
+            icon-type="solid"
+            miniTitle="CU"
+            :route="{ to: 'default.createEquipRequest' }"
+          ></side-menu>
+
+          <side-menu
+            isTag="router-link"
+            title="View Requisition Requests"
+            icon="circle"
+            :icon-size="10"
+            icon-type="solid"
+            miniTitle="VU"
+            :route="{ to: 'default.viewRequests' }"
+          ></side-menu>
+
+          <side-menu
+            isTag="router-link"
+            title="View Approvals"
+            icon="circle"
+            :icon-size="10"
+            icon-type="solid"
+            miniTitle="VU"
+            :route="{ to: 'default.viewRequestApprovals' }"
+          ></side-menu>
+
+        </b-collapse>
+      </side-menu>
+
+
       <!-- Users Menu -->
       <side-menu
         v-if="canViewUsers"

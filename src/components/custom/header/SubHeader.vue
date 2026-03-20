@@ -52,10 +52,6 @@
 
 <script>
 import store from '@/store'
-import env from '@/environment/environment'
-import axios from 'axios'
-import config from '@/config/config'
-import Swal from 'sweetalert2'
 
 export default {
   data() {
@@ -87,53 +83,8 @@ export default {
     this.user = JSON.parse(store.state.user)
     this.username = this.user?.user?.username || 'User'
     this.role = this.user?.role
-    this.fetchDashboardStatistics();
   },
-  methods:{
-    fetchDashboardStatistics() {
-      this.loading = true
-      const url = env.apiUrl.baseUrl + env.apiUrl.dashboard.fetchDashStats
-
-      axios
-        .post(url, { page: 0, size: 10 })
-        .then((response) => {
-          const data = response.data
-          if (data.responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: data.responseMessage,
-              customClass: {
-                confirmButton: 'btn btn-success px-4 me-2',
-                cancelButton: 'btn btn-secondary px-4'
-              }
-            })
-            return
-          }
-          console.log("dash data",data)
-          this.dashStats = data.entity
-          this.stats[0].value = this.dashStats.activeDeals;
-          this.stats[1].value = this.dashStats.successRate +"%";
-          this.stats[2].value = "+"+this.dashStats.weekRate+"%";
-
-        })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error occurred fetching Dashboard Statistics',
-            customClass: {
-              confirmButton: 'btn btn-success px-4 me-2',
-              cancelButton: 'btn btn-secondary px-4'
-            }
-          })
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-  }
+  methods: {}
 }
 </script>
 
@@ -165,17 +116,20 @@ export default {
   transform: scale(1.05);
 }
 
+/* ── Blue overlay gradient ── */
 .overlay-gradient {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg,
-  rgba(16, 185, 129, 0.65) 0%,
-  rgba(5, 150, 105, 0.55) 35%,
-  rgba(4, 120, 87, 0.65) 70%,
-  rgba(6, 78, 59, 0.75) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.75) 0%,
+    rgba(30, 58, 92, 0.65) 35%,
+    rgba(26, 51, 82, 0.75) 70%,
+    rgba(15, 30, 46, 0.85) 100%
+  );
   z-index: 1;
 }
 
@@ -207,12 +161,8 @@ export default {
 .grid-line:nth-child(8) { animation-delay: 1.4s; }
 
 @keyframes gridPulse {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.8;
-  }
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.8; }
 }
 
 .iq-container {
@@ -232,14 +182,8 @@ export default {
 }
 
 @keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .greeting-wrapper {
@@ -266,21 +210,22 @@ export default {
 @keyframes wave {
   0%, 100% { transform: rotate(0deg); }
   10%, 30% { transform: rotate(14deg); }
-  20% { transform: rotate(-8deg); }
-  40% { transform: rotate(14deg); }
-  50% { transform: rotate(-4deg); }
-  60% { transform: rotate(10deg); }
+  20%       { transform: rotate(-8deg); }
+  40%       { transform: rotate(14deg); }
+  50%       { transform: rotate(-4deg); }
+  60%       { transform: rotate(10deg); }
 }
 
+/* ── Blue username highlight ── */
 .username-highlight {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+  background: linear-gradient(135deg, #5a8fc8 0%, #a8c4e0 50%, #d6e8f5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
   font-weight: 800;
   text-shadow: none;
-  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.4));
+  filter: drop-shadow(0 2px 8px rgba(46, 84, 126, 0.5));
 }
 
 .welcome-subtitle {
@@ -291,6 +236,7 @@ export default {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* ── Stat Cards ── */
 .quick-stats {
   display: flex;
   gap: 1.5rem;
@@ -298,9 +244,9 @@ export default {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -311,7 +257,7 @@ export default {
   min-width: 180px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .stat-card:nth-child(1) { animation-delay: 0.2s; }
@@ -319,14 +265,8 @@ export default {
 .stat-card:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .stat-shimmer {
@@ -338,7 +278,7 @@ export default {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.08),
     transparent
   );
   transform: rotate(45deg);
@@ -346,19 +286,16 @@ export default {
 }
 
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(45deg);
-  }
+  0%   { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
 }
 
+/* ── Hover: blue shadow instead of green ── */
 .stat-card:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.3);
-  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow: 0 12px 28px rgba(46, 84, 126, 0.4);
+  border-color: rgba(168, 196, 224, 0.5);
 }
 
 .stat-icon {
@@ -380,16 +317,17 @@ export default {
   transform: scale(1.1) rotate(5deg);
 }
 
+/* ── Icon backgrounds — three blue tones ── */
 .stat-icon-1 {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.8));
+  background: linear-gradient(135deg, rgba(46, 84, 126, 0.95), rgba(30, 58, 92, 0.85));
 }
 
 .stat-icon-2 {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.9), rgba(16, 185, 129, 0.8));
+  background: linear-gradient(135deg, rgba(61, 111, 168, 0.95), rgba(46, 84, 126, 0.85));
 }
 
 .stat-icon-3 {
-  background: linear-gradient(135deg, rgba(110, 231, 183, 0.9), rgba(52, 211, 153, 0.8));
+  background: linear-gradient(135deg, rgba(90, 143, 200, 0.95), rgba(61, 111, 168, 0.85));
 }
 
 .stat-icon svg {
@@ -418,6 +356,7 @@ export default {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* ── Particles — blue tones ── */
 .animated-particles {
   position: absolute;
   top: 0;
@@ -432,21 +371,21 @@ export default {
   position: absolute;
   width: 6px;
   height: 6px;
-  background: radial-gradient(circle, rgba(110, 231, 183, 0.8), rgba(52, 211, 153, 0.4));
+  background: radial-gradient(circle, rgba(168, 196, 224, 0.8), rgba(90, 143, 200, 0.4));
   border-radius: 50%;
   animation: float 8s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 10px rgba(46, 84, 126, 0.6);
 }
 
-.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-.particle:nth-child(2) { left: 20%; animation-delay: 1s; }
-.particle:nth-child(3) { left: 30%; animation-delay: 2s; }
-.particle:nth-child(4) { left: 40%; animation-delay: 3s; }
-.particle:nth-child(5) { left: 50%; animation-delay: 4s; }
-.particle:nth-child(6) { left: 60%; animation-delay: 0.5s; }
-.particle:nth-child(7) { left: 70%; animation-delay: 1.5s; }
-.particle:nth-child(8) { left: 80%; animation-delay: 2.5s; }
-.particle:nth-child(9) { left: 90%; animation-delay: 3.5s; }
+.particle:nth-child(1)  { left: 10%; animation-delay: 0s; }
+.particle:nth-child(2)  { left: 20%; animation-delay: 1s; }
+.particle:nth-child(3)  { left: 30%; animation-delay: 2s; }
+.particle:nth-child(4)  { left: 40%; animation-delay: 3s; }
+.particle:nth-child(5)  { left: 50%; animation-delay: 4s; }
+.particle:nth-child(6)  { left: 60%; animation-delay: 0.5s; }
+.particle:nth-child(7)  { left: 70%; animation-delay: 1.5s; }
+.particle:nth-child(8)  { left: 80%; animation-delay: 2.5s; }
+.particle:nth-child(9)  { left: 90%; animation-delay: 3.5s; }
 .particle:nth-child(10) { left: 15%; animation-delay: 0.8s; }
 .particle:nth-child(11) { left: 25%; animation-delay: 1.8s; }
 .particle:nth-child(12) { left: 35%; animation-delay: 2.8s; }
@@ -456,7 +395,7 @@ export default {
 .particle:nth-child(16) { left: 75%; animation-delay: 2.3s; }
 .particle:nth-child(17) { left: 85%; animation-delay: 3.3s; }
 .particle:nth-child(18) { left: 95%; animation-delay: 0.6s; }
-.particle:nth-child(19) { left: 5%; animation-delay: 1.6s; }
+.particle:nth-child(19) { left: 5%;  animation-delay: 1.6s; }
 .particle:nth-child(20) { left: 50%; animation-delay: 2.6s; }
 
 @keyframes float {
@@ -464,18 +403,15 @@ export default {
     transform: translateY(0) translateX(0) scale(1);
     opacity: 0;
   }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.6;
-  }
-  50% {
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.6; }
+  50%  {
     transform: translateY(-120px) translateX(30px) scale(1.5);
     opacity: 1;
   }
 }
 
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .modern-header {
     height: auto;
@@ -483,35 +419,17 @@ export default {
     padding: 20px 0;
   }
 
-  .welcome-title {
-    font-size: 1.75rem;
-  }
+  .welcome-title   { font-size: 1.75rem; }
+  .wave-emoji      { font-size: 1.75rem; }
+  .welcome-subtitle { font-size: 1rem; }
 
-  .wave-emoji {
-    font-size: 1.75rem;
-  }
-
-  .welcome-subtitle {
-    font-size: 1rem;
-  }
-
-  .quick-stats {
-    flex-direction: column;
-  }
-
-  .stat-card {
-    width: 100%;
-  }
-
-  .stat-value {
-    font-size: 1.5rem;
-  }
+  .quick-stats    { flex-direction: column; }
+  .stat-card      { width: 100%; }
+  .stat-value     { font-size: 1.5rem; }
 }
 
 @media (max-width: 576px) {
-  .greeting-wrapper {
-    margin-bottom: 1.5rem;
-  }
+  .greeting-wrapper { margin-bottom: 1.5rem; }
 
   .stat-card {
     padding: 1rem 1.25rem;

@@ -111,7 +111,7 @@ export default{
                     <div class="logo-wrapper">
                       <img
                         class="logo-image"
-                        src="@/assets/images/Kingdom-bank-logo.png"
+                        src="@/assets/images/adventist_logo.png"
                         alt="Kingdom Bank Logo"
                         width="280"
                         height="80"
@@ -123,7 +123,7 @@ export default{
                 <!-- Welcome Section -->
                 <div class="welcome-section">
                   <h2 class="welcome-title">Welcome Back</h2>
-                  <p class="welcome-subtitle">Sign in to access your forex Quote account</p>
+                  <p class="welcome-subtitle">Sign in to access your account</p>
                 </div>
 
                 <!-- Error Alert -->
@@ -204,11 +204,11 @@ export default{
                   </div>
 
                   <!-- Forgot Password Link -->
-<!--                  <div class="form-footer">-->
-<!--                    <a href="#" @click.prevent="forgotPassword" class="forgot-link">-->
-<!--                      Forgot password?-->
-<!--                    </a>-->
-<!--                  </div>-->
+                  <!--                  <div class="form-footer">-->
+                  <!--                    <a href="#" @click.prevent="forgotPassword" class="forgot-link">-->
+                  <!--                      Forgot password?-->
+                  <!--                    </a>-->
+                  <!--                  </div>-->
 
                   <!-- Submit Button -->
                   <div class="form-actions">
@@ -260,9 +260,9 @@ export default{
             loading="lazy"
           />
           <div class="brand-info">
-            <h3 class="brand-title">Forex Quote</h3>
+            <h3 class="brand-title">Equipment Management System</h3>
             <p class="brand-description">
-              Access accurate FX Deals at branches within a matter of seconds.
+              Access church Equipment within a matter of seconds.
             </p>
             <div class="brand-features">
               <div class="feature-item">
@@ -276,7 +276,7 @@ export default{
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>Deal Code Generation </span>
+                <span>Equipment Management </span>
               </div>
               <div class="feature-item">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -293,12 +293,12 @@ export default{
 </template>
 
 <style scoped>
-/* Enhanced Login Page Styles */
+/* Login Page Styles — Blue Theme: rgba(46, 84, 126) */
 
 /* Main Container */
 .login-content-enhanced {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f0f4f9 0%, #ffffff 100%);
   overflow: hidden;
 }
 
@@ -322,8 +322,8 @@ export default{
   background: #ffffff;
   border-radius: 24px;
   padding: 48px 40px;
-  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08);
-  border: 2px solid rgba(16, 185, 129, 0.1);
+  box-shadow: 0 10px 40px rgba(46, 84, 126, 0.1);
+  border: 2px solid rgba(46, 84, 126, 0.12);
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -354,14 +354,14 @@ export default{
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
   border-radius: 16px;
   transition: all 0.3s ease;
 }
 
 .logo-wrapper:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 8px 20px rgba(46, 84, 126, 0.18);
 }
 
 .logo-image {
@@ -379,7 +379,7 @@ export default{
 .welcome-title {
   font-size: 28px;
   font-weight: 700;
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -487,7 +487,7 @@ export default{
 }
 
 .form-label-enhanced svg {
-  stroke: #059669;
+  stroke: #2e547e;
   flex-shrink: 0;
 }
 
@@ -508,8 +508,8 @@ export default{
 }
 
 .form-control-enhanced:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  border-color: #2e547e;
+  box-shadow: 0 0 0 4px rgba(46, 84, 126, 0.1);
   outline: none;
 }
 
@@ -540,8 +540,8 @@ export default{
 }
 
 .password-toggle:hover {
-  background: #f3f4f6;
-  color: #059669;
+  background: #eef4fb;
+  color: #2e547e;
 }
 
 /* Form Footer */
@@ -554,7 +554,7 @@ export default{
 .forgot-link {
   font-size: 14px;
   font-weight: 600;
-  color: #059669;
+  color: #2e547e;
   text-decoration: none;
   transition: all 0.2s ease;
   position: relative;
@@ -567,7 +567,7 @@ export default{
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #2e547e, #3d6fa8);
   transition: width 0.3s ease;
 }
 
@@ -576,7 +576,7 @@ export default{
 }
 
 .forgot-link:hover {
-  color: #047857;
+  color: #1a3352;
 }
 
 /* Sign In Button */
@@ -587,7 +587,12 @@ export default{
 .btn-signin {
   width: 100%;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -595,7 +600,7 @@ export default{
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 6px 16px rgba(46, 84, 126, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -619,9 +624,14 @@ export default{
 }
 
 .btn-signin:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 1) 0%,
+    rgba(46, 84, 126, 0.85) 50%,
+    rgba(46, 84, 126, 0.7) 100%
+  );
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 10px 24px rgba(46, 84, 126, 0.45);
 }
 
 .btn-signin:disabled {
@@ -656,23 +666,23 @@ export default{
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border: 2px solid #d1fae5;
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
+  border: 2px solid rgba(46, 84, 126, 0.18);
   border-radius: 10px;
   font-size: 13px;
-  color: #047857;
+  color: #1a3352;
   font-weight: 500;
 }
 
 .security-notice svg {
-  stroke: #059669;
+  stroke: #2e547e;
   flex-shrink: 0;
 }
 
 /* Right Section - Brand */
 .brand-section {
   position: relative;
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   overflow: hidden;
 }
 
@@ -691,7 +701,12 @@ export default{
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(4, 120, 87, 0.95) 0%, rgba(5, 150, 105, 0.85) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
   z-index: 1;
 }
 
@@ -753,8 +768,8 @@ export default{
 }
 
 .feature-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
   transform: translateX(8px);
 }
 

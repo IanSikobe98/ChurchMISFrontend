@@ -170,7 +170,6 @@ export default{
     resendOtp() {
       if (!this.canResend) return;
 
-      // Add your resend OTP logic here
       console.log('Resending OTP...');
       this.startResendTimer();
       this.clearOtp();
@@ -200,7 +199,6 @@ export default{
 
     this.startResendTimer();
     this.otpExpiry = localStorage.getItem('otpExpiry');
-
   },
 
   beforeUnmount() {
@@ -227,7 +225,7 @@ export default{
                     <div class="logo-wrapper">
                       <img
                         class="logo-image"
-                        src="@/assets/images/Kingdom-bank-logo.png"
+                        src="@/assets/images/adventist_logo.png"
                         alt="Kingdom Bank Logo"
                         width="280"
                         height="80"
@@ -296,23 +294,23 @@ export default{
                 </div>
 
                 <!-- Resend Section -->
-<!--                <div class="resend-section">-->
-<!--                  <p class="resend-text">Didn't receive the code?</p>-->
-<!--                  <button-->
-<!--                    class="resend-btn"-->
-<!--                    :class="{ 'disabled': !canResend }"-->
-<!--                    :disabled="!canResend"-->
-<!--                    @click="resendOtp"-->
-<!--                  >-->
-<!--                    <svg v-if="canResend" width="16" height="16" viewBox="0 0 24 24" fill="none">-->
-<!--                      <path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--                      <path d="M23 20V14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--                      <path d="M20.49 9C19.9828 7.56678 19.1209 6.28536 17.9845 5.27542C16.8482 4.26548 15.4745 3.55976 13.9917 3.22426C12.5089 2.88875 10.9652 2.93434 9.50481 3.35677C8.04437 3.77921 6.71475 4.56471 5.64 5.64L1 10M23 14L18.36 18.36C17.2853 19.4353 15.9556 20.2208 14.4952 20.6432C13.0348 21.0657 11.4911 21.1112 10.0083 20.7757C8.52547 20.4402 7.1518 19.7345 6.01547 18.7246C4.87913 17.7146 4.01717 16.4332 3.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--                    </svg>-->
-<!--                    <span v-if="canResend">Resend Code</span>-->
-<!--                    <span v-else>Resend in {{ resendTimer }}s</span>-->
-<!--                  </button>-->
-<!--                </div>-->
+                <!--                <div class="resend-section">-->
+                <!--                  <p class="resend-text">Didn't receive the code?</p>-->
+                <!--                  <button-->
+                <!--                    class="resend-btn"-->
+                <!--                    :class="{ 'disabled': !canResend }"-->
+                <!--                    :disabled="!canResend"-->
+                <!--                    @click="resendOtp"-->
+                <!--                  >-->
+                <!--                    <svg v-if="canResend" width="16" height="16" viewBox="0 0 24 24" fill="none">-->
+                <!--                      <path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
+                <!--                      <path d="M23 20V14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
+                <!--                      <path d="M20.49 9C19.9828 7.56678 19.1209 6.28536 17.9845 5.27542C16.8482 4.26548 15.4745 3.55976 13.9917 3.22426C12.5089 2.88875 10.9652 2.93434 9.50481 3.35677C8.04437 3.77921 6.71475 4.56471 5.64 5.64L1 10M23 14L18.36 18.36C17.2853 19.4353 15.9556 20.2208 14.4952 20.6432C13.0348 21.0657 11.4911 21.1112 10.0083 20.7757C8.52547 20.4402 7.1518 19.7345 6.01547 18.7246C4.87913 17.7146 4.01717 16.4332 3.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>-->
+                <!--                    </svg>-->
+                <!--                    <span v-if="canResend">Resend Code</span>-->
+                <!--                    <span v-else>Resend in {{ resendTimer }}s</span>-->
+                <!--                  </button>-->
+                <!--                </div>-->
 
                 <!-- Back to Sign In -->
                 <div class="back-section">
@@ -381,12 +379,12 @@ export default{
 </template>
 
 <style scoped>
-/* Enhanced OTP Page Styles */
+/* OTP Page Styles — Blue Theme: rgba(46, 84, 126) */
 
 /* Main Container */
 .otp-content-enhanced {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f0f4f9 0%, #ffffff 100%);
   overflow: hidden;
 }
 
@@ -410,8 +408,8 @@ export default{
   background: #ffffff;
   border-radius: 24px;
   padding: 48px 40px;
-  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08);
-  border: 2px solid rgba(16, 185, 129, 0.1);
+  box-shadow: 0 10px 40px rgba(46, 84, 126, 0.1);
+  border: 2px solid rgba(46, 84, 126, 0.12);
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -442,14 +440,14 @@ export default{
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
   border-radius: 16px;
   transition: all 0.3s ease;
 }
 
 .logo-wrapper:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 8px 20px rgba(46, 84, 126, 0.18);
 }
 
 .logo-image {
@@ -467,7 +465,7 @@ export default{
 .welcome-title {
   font-size: 28px;
   font-weight: 700;
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -584,19 +582,19 @@ export default{
   color: #1f2937;
   transition: all 0.3s ease;
   background: #ffffff;
-  caret-color: #10b981;
+  caret-color: #2e547e;
 }
 
 .otp-input-enhanced:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  border-color: #2e547e;
+  box-shadow: 0 0 0 4px rgba(46, 84, 126, 0.1);
   outline: none;
   transform: scale(1.05);
 }
 
 .otp-input-enhanced.filled {
-  border-color: #10b981;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-color: #2e547e;
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
 }
 
 .otp-input-enhanced::placeholder {
@@ -610,17 +608,17 @@ export default{
   justify-content: center;
   gap: 10px;
   padding: 12px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border: 2px solid #d1fae5;
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
+  border: 2px solid rgba(46, 84, 126, 0.18);
   border-radius: 12px;
-  color: #047857;
+  color: #1a3352;
   font-size: 14px;
   font-weight: 600;
 }
 
 .loading-indicator .spinner {
   animation: spin 1s linear infinite;
-  stroke: #059669;
+  stroke: #2e547e;
 }
 
 @keyframes spin {
@@ -633,7 +631,7 @@ export default{
   text-align: center;
   margin-bottom: 24px;
   padding-bottom: 24px;
-  border-bottom: 2px solid #f0fdf4;
+  border-bottom: 2px solid #eef4fb;
 }
 
 .resend-text {
@@ -647,7 +645,12 @@ export default{
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
   border: none;
   border-radius: 10px;
   font-size: 14px;
@@ -655,13 +658,17 @@ export default{
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.25);
 }
 
 .resend-btn:hover:not(.disabled) {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 1) 0%,
+    rgba(46, 84, 126, 0.85) 100%
+  );
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 6px 16px rgba(46, 84, 126, 0.35);
 }
 
 .resend-btn.disabled {
@@ -697,11 +704,11 @@ export default{
 }
 
 .back-btn:hover {
-  background: #f9fafb;
-  border-color: #d1fae5;
-  color: #059669;
+  background: #eef4fb;
+  border-color: rgba(46, 84, 126, 0.25);
+  color: #2e547e;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.1);
 }
 
 .back-btn svg {
@@ -715,23 +722,23 @@ export default{
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #fbbf24;
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
+  border: 2px solid rgba(46, 84, 126, 0.18);
   border-radius: 10px;
   font-size: 13px;
-  color: #78350f;
+  color: #1a3352;
   font-weight: 500;
 }
 
 .security-notice svg {
-  stroke: #d97706;
+  stroke: #2e547e;
   flex-shrink: 0;
 }
 
-/* Right Section - Brand (Same as Sign In) */
+/* Right Section - Brand */
 .brand-section {
   position: relative;
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   overflow: hidden;
 }
 
@@ -750,7 +757,12 @@ export default{
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(4, 120, 87, 0.95) 0%, rgba(5, 150, 105, 0.85) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
   z-index: 1;
 }
 
@@ -812,8 +824,8 @@ export default{
 }
 
 .feature-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
   transform: translateX(8px);
 }
 

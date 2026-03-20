@@ -12,6 +12,10 @@ import ViewRoleApprovals from '@/views/roles/ViewRoleApprovals.vue'
 import UpdateRole from '@/views/roles/UpdateRole.vue'
 import ViewDealCodes from '@/views/teller/ViewDealCodes.vue'
 import ConvertCurrency from '@/views/currency/ConvertCurrency.vue'
+import ViewRequests from '@/views/equipment/ViewRequests.vue'
+import CreateEquipRequest from '@/views/equipment/CreateEquipRequest.vue'
+import ViewRequestApprovals from '@/views/equipment/ViewRequestApprovals.vue'
+import ViewRequestDetails from '@/views/equipment/ViewRequestDetails.vue'
 
 
 const defaultChildRoutes = (prefix) => [
@@ -87,6 +91,34 @@ const defaultChildRoutes = (prefix) => [
     name: prefix + '.updateRole',
     meta: { auth: true, name: 'updateRole', isBanner: true, requiresAuth: true },
     component: UpdateRole
+  },
+
+  {
+    path: '/viewRequests',
+    name: prefix + '.viewRequests',
+    meta: { auth: true, name: 'viewRequests', isBanner: true, requiresAuth: true },
+    component: ViewRequests
+  },
+
+  {
+    path: '/viewRequestApprovals',
+    name: prefix + '.viewRequestApprovals',
+    meta: { auth: true, name: 'viewRequestApprovals', isBanner: true, requiresAuth: true },
+    component: ViewRequestApprovals
+  },
+
+  {
+    path: '/viewRequestDetails',
+    name: prefix + '.viewRequestDetails',
+    meta: { auth: true, name: 'viewRequestDetails', isBanner: true, requiresAuth: true },
+    component: ViewRequestDetails
+  },
+
+  {
+    path: '/createEquipRequest',
+    name: prefix + '.createEquipRequest',
+    meta: { auth: true, name: 'createEquipRequest', isBanner: true, requiresAuth: true },
+    component: CreateEquipRequest
   },
 
 

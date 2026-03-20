@@ -1,6 +1,6 @@
 export default {
     apiUrl: {
-        baseUrl: 'http://localhost:9072/rfqService/api/v1',
+        baseUrl: 'http://localhost:8012/churchService/api/v1',
       //SIT
       // baseUrl: 'http://10.0.1.209:9072/rfqService/api/v1',
         auth: {
@@ -42,6 +42,19 @@ export default {
       },
       dashboard:{
        fetchDashStats: '/dashboard/fetchDashStats'
+      }
+
+      ,equipment:{
+          fetchEquipmentInfo : '/equipment/getEquipmentInfo',
+          createEquipmentRequest:'/equipment/createRequest',
+          getEquipmentRequests:'/equipment/getEquipmentRequests',
+          getRequestApprovalsByRole: '/equipment/getRequestApprovalsByRole',
+          getEquipmentConditionReport: '/equipment/getEquipmentConditionReport',
+          getRequestApprovalsByRequest: '/equipment/getRequestApprovalsByRequest',
+          getEquipmentByRequest: '/equipment/getEquipmentByRequest'
+
+
+
       }
     }
 }

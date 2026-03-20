@@ -303,12 +303,21 @@ export default {
 /* Dark Mode Support (if applicable) */
 @media (prefers-color-scheme: dark) {
   .logo-wrapper {
-    background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.7) 100%);
-    border-color: rgba(16, 185, 129, 0.2);
+    background: linear-gradient(
+      135deg,
+      rgba(46, 84, 126, 0.95) 0%,
+      rgba(30, 58, 95, 0.85) 100%
+    );
+    border-color: rgba(46, 84, 126, 0.3);
   }
 
   .logo-wrapper:hover {
-    background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(4, 120, 87, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(46, 84, 126, 0.9) 0%,
+      rgba(46, 84, 126, 0.7) 50%,
+      rgba(46, 84, 126, 0.5) 100%
+    );
   }
 }
 </style>

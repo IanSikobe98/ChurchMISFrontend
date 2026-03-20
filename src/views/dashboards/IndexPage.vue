@@ -18,7 +18,7 @@
     <!-- Quick Actions Section -->
     <div class="row mb-4" data-aos="fade-up" data-aos-delay="600">
 
-      <div v-if = "canViewDealCodeRequests" class="col-md-6 mb-4">
+      <div v-if="canViewDealCodeRequests" class="col-md-6 mb-4">
         <div class="action-card action-secondary">
           <div class="action-content">
             <div class="action-icon">
@@ -74,31 +74,19 @@
               <p class="table-subtitle">Recent forex deal requests and their status</p>
             </div>
             <div class="table-actions">
-<!--              <button class="filter-btn">-->
-<!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-<!--                  <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                </svg>-->
-<!--                Filter-->
-<!--              </button>-->
-<!--              <button class="export-btn">-->
-<!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-<!--                  <path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                  <path d="M3 17V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                </svg>-->
-<!--                Export-->
-<!--              </button>              <button class="filter-btn">-->
-<!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-<!--                  <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                </svg>-->
-<!--                Filter-->
-<!--              </button>-->
-<!--              <button class="export-btn">-->
-<!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-<!--                  <path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                  <path d="M3 17V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
-<!--                </svg>-->
-<!--                Export-->
-<!--              </button>-->
+              <!--              <button class="filter-btn">-->
+              <!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
+              <!--                  <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
+              <!--                </svg>-->
+              <!--                Filter-->
+              <!--              </button>-->
+              <!--              <button class="export-btn">-->
+              <!--                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
+              <!--                  <path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
+              <!--                  <path d="M3 17V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>-->
+              <!--                </svg>-->
+              <!--                Export-->
+              <!--              </button>-->
             </div>
           </div>
 
@@ -117,10 +105,6 @@
 import { onMounted } from 'vue'
 import AOS from 'aos'
 import store from '@/store'
-import env from '@/environment/environment'
-import axios from 'axios'
-import config from '@/config/config'
-import Swal from 'sweetalert2'
 import DataTable from '@/components/DataTable.vue'
 import RateCarousel from '@/components/RateCarousel.vue'
 
@@ -169,7 +153,6 @@ export default {
   },
   computed: {
     columns() {
-      // const canApprove = this.canApproveDealCodeRequests
       const cols = [
         { title: 'Customer Name', data: 'customerName' },
         { title: 'Account Number', data: 'accountNumber' },
@@ -201,7 +184,6 @@ export default {
         { title: 'Order Number', data: 'orderId' }
       ]
 
-
       return cols
     },
     canCreateDealCodeRequests() {
@@ -221,106 +203,15 @@ export default {
     this.user = JSON.parse(store.state.user)
     this.permissions = this.user?.usersPerm
     this.tableReady = true
-    this.fetchDealRequests()
-    this.getAllExchangeRates()
   },
   methods: {
     hasPerm(permission) {
       return this.permissions && this.permissions.includes(permission)
     },
-    fetchDealRequests() {
-      this.loading = true
-      const url = env.apiUrl.baseUrl + env.apiUrl.rfq.getDealRequests
-      const token = localStorage.getItem('token')
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
-      axios.post(url, { page: 0, size: 10 })
-        .then((response) => {
-          const data = response.data
-          if (data.responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: data.responseMessage,
-              customClass: {
-                confirmButton: 'btn btn-success px-4 me-2',
-                cancelButton: 'btn btn-secondary px-4'
-              }
-            })
-            return
-          }
-          this.dealRequests = data.data
-        })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error occurred fetching Deal Requests',
-            customClass: {
-              confirmButton: 'btn btn-success px-4 me-2',
-              cancelButton: 'btn btn-secondary px-4'
-            }
-          })
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    getAllExchangeRates() {
-      this.loading = true
-      const url = env.apiUrl.baseUrl + env.apiUrl.rfq.getAllExchangeRates
-
-      axios.post(url, { page: 0, size: 10 })
-        .then((response) => {
-          const data = response.data
-          if (data.responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: data.responseMessage,
-              customClass: {
-                confirmButton: 'btn btn-success px-4 me-2',
-                cancelButton: 'btn btn-secondary px-4'
-              }
-            })
-            return
-          }
-          this.exchangeRates = data?.entity
-          this.exchangeRates.forEach((exchangeRate) => {
-            var fromCurrencyString = this.currencyOptions.find(
-              item => item.id === exchangeRate.fromCurrency
-            )?.name;
-
-
-
-            var toCurrencyString = this.currencyOptions.find(
-              item => item.id === exchangeRate.toCurrency
-            )?.name;
-            exchangeRate.label = fromCurrencyString +"/"+toCurrencyString;
-          })
-          console.log('exchange rates', this.exchangeRates)
-        })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error occurred fetching Exchange Rates',
-            customClass: {
-              confirmButton: 'btn btn-success px-4 me-2',
-              cancelButton: 'btn btn-secondary px-4'
-            }
-          })
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    viewDeals(){
+    viewDeals() {
       this.$router.push('/viewDealCodes');
     },
-    convertCurrency(){
+    convertCurrency() {
       this.$router.push('/convertCurrency');
     },
   }
@@ -328,9 +219,9 @@ export default {
 </script>
 
 <style scoped>
-/* Main Content Wrapper - Prevents footer overlap */
+/* Main Content Wrapper */
 .main-content-wrapper {
-  min-height: calc(100vh - 280px - 80px); /* viewport height - header - footer */
+  min-height: calc(100vh - 280px - 80px);
   padding-bottom: 60px;
 }
 
@@ -345,7 +236,7 @@ export default {
 .section-title {
   font-size: 26px;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -354,31 +245,30 @@ export default {
 .pulse-dot {
   width: 10px;
   height: 10px;
-  background: #10b981;
+  background: #2e547e;
   border-radius: 50%;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  box-shadow: 0 0 0 0 rgba(46, 84, 126, 0.7);
 }
 
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    box-shadow: 0 0 0 0 rgba(46, 84, 126, 0.7);
   }
   50% {
     opacity: 0.7;
     transform: scale(1.1);
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 8px rgba(46, 84, 126, 0);
   }
 }
 
 /* Action Cards */
 .action-card {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   border-radius: 20px;
   padding: 28px;
-  border: 2px solid rgba(16, 185, 129, 0.2);
+  border: 2px solid rgba(46, 84, 126, 0.18);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
@@ -386,7 +276,7 @@ export default {
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.08);
 }
 
 .action-card::before {
@@ -396,7 +286,7 @@ export default {
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(46, 84, 126, 0.08) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
@@ -408,16 +298,16 @@ export default {
 
 .action-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 16px 32px rgba(46, 84, 126, 0.18);
+  border-color: rgba(46, 84, 126, 0.35);
 }
 
 .action-primary {
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  background: linear-gradient(135deg, #eef4fb 0%, #dce9f5 100%);
 }
 
 .action-secondary {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  background: linear-gradient(135deg, #f0f4f9 0%, #e4eff8 100%);
 }
 
 .action-content {
@@ -438,15 +328,15 @@ export default {
 }
 
 .action-primary .action-icon {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
-  color: #059669;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  background: linear-gradient(135deg, rgba(46, 84, 126, 0.18), rgba(46, 84, 126, 0.1));
+  color: #2e547e;
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.15);
 }
 
 .action-secondary .action-icon {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.15));
-  color: #10b981;
-  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.15);
+  background: linear-gradient(135deg, rgba(61, 111, 168, 0.18), rgba(46, 84, 126, 0.1));
+  color: #3d6fa8;
+  box-shadow: 0 4px 12px rgba(61, 111, 168, 0.15);
 }
 
 .action-card:hover .action-icon {
@@ -456,13 +346,13 @@ export default {
 .action-title {
   font-size: 20px;
   font-weight: 700;
-  color: #064e3b;
+  color: #1a3352;
   margin-bottom: 6px;
 }
 
 .action-description {
   font-size: 14px;
-  color: #047857;
+  color: #2e547e;
   margin: 0;
   line-height: 1.5;
 }
@@ -486,13 +376,23 @@ export default {
 }
 
 .action-primary .action-btn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.3);
 }
 
 .action-secondary .action-btn {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(61, 111, 168, 0.9) 0%,
+    rgba(46, 84, 126, 0.75) 50%,
+    rgba(46, 84, 126, 0.6) 100%
+  );
+  box-shadow: 0 4px 12px rgba(61, 111, 168, 0.3);
 }
 
 .action-btn::before {
@@ -503,7 +403,7 @@ export default {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
@@ -513,9 +413,26 @@ export default {
   height: 300px;
 }
 
-.action-btn:hover {
+.action-primary .action-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 1) 0%,
+    rgba(46, 84, 126, 0.85) 50%,
+    rgba(46, 84, 126, 0.7) 100%
+  );
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 20px rgba(46, 84, 126, 0.4);
+}
+
+.action-secondary .action-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(61, 111, 168, 1) 0%,
+    rgba(46, 84, 126, 0.9) 50%,
+    rgba(46, 84, 126, 0.75) 100%
+  );
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(46, 84, 126, 0.4);
 }
 
 .action-btn svg {
@@ -538,29 +455,29 @@ export default {
   background: #fff;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
-  border: 2px solid rgba(16, 185, 129, 0.1);
+  box-shadow: 0 4px 16px rgba(46, 84, 126, 0.08);
+  border: 2px solid rgba(46, 84, 126, 0.12);
   transition: all 0.3s ease;
 }
 
 .table-card:hover {
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 8px 24px rgba(46, 84, 126, 0.14);
+  border-color: rgba(46, 84, 126, 0.22);
 }
 
 .table-header {
   padding: 28px;
-  border-bottom: 2px solid #f0fdf4;
+  border-bottom: 2px solid #eef4fb;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #eef4fb 0%, #ffffff 100%);
 }
 
 .table-title {
   font-size: 22px;
   font-weight: 700;
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -569,7 +486,7 @@ export default {
 
 .table-subtitle {
   font-size: 14px;
-  color: #059669;
+  color: #2e547e;
   margin: 0;
 }
 
@@ -585,60 +502,69 @@ export default {
   gap: 8px;
   padding: 10px 18px;
   background: #fff;
-  border: 2px solid #d1fae5;
+  border: 2px solid rgba(46, 84, 126, 0.2);
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
-  color: #059669;
+  color: #2e547e;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .filter-btn:hover,
 .export-btn:hover {
-  background: #ecfdf5;
-  border-color: #10b981;
-  color: #047857;
+  background: #eef4fb;
+  border-color: #2e547e;
+  color: #1a3352;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.15);
 }
 
 .table-body {
   padding: 28px;
 }
 
+/* Rate Carousel Container */
 .rate-carousel-container {
   background: #fff;
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
-  border: 2px solid rgba(16, 185, 129, 0.1);
+  box-shadow: 0 4px 16px rgba(46, 84, 126, 0.08);
+  border: 2px solid rgba(46, 84, 126, 0.12);
   transition: all 0.3s ease;
 }
 
 .rate-carousel-container:hover {
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 8px 24px rgba(46, 84, 126, 0.14);
+  border-color: rgba(46, 84, 126, 0.22);
 }
 
-/* Custom Badge Styles for Green Theme */
+/* Custom Badge Styles */
 :deep(.badge.bg-success) {
-  background: linear-gradient(135deg, #10b981, #059669) !important;
+  background: linear-gradient(135deg, #2e547e, #1a3352) !important;
   padding: 6px 12px;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 2px 8px rgba(46, 84, 126, 0.2);
 }
 
 :deep(.dt-approve) {
-  background: linear-gradient(135deg, #10b981, #059669) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 100%
+  ) !important;
   border: none !important;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 2px 8px rgba(46, 84, 126, 0.2);
 }
 
 :deep(.dt-approve):hover {
-  background: linear-gradient(135deg, #059669, #047857) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 1) 0%,
+    rgba(46, 84, 126, 0.85) 100%
+  ) !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.3);
 }
 
 @media (max-width: 768px) {
