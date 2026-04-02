@@ -23,6 +23,7 @@ const toggle = (route) => {
 }
 toggle(route.name)
 </script>
+
 <script>
 import store from '@/store'
 
@@ -34,34 +35,17 @@ export default {
     }
   },
   computed: {
-    //Permission Check Functions
-    canCreateUsers() {
-      return this.hasPerm("CREATE_USERS");
-    },
-    canViewUsers() {
-      return this.hasPerm("VIEW_USERS");
-    },
-    canApproveUsers () {
-      return this.hasPerm("APPROVE_USERS");
-    },
-    canViewDealCodeRequests() {
-      return this.hasPerm("VIEW_DEAL_REQUESTS");
-    },
-    canCreateRoles () {
-      return this.hasPerm("CREATE_ROLES");
-    },
-    canViewRoles () {
-      return this.hasPerm("VIEW_ROLES");
-    },
-    canApproveRoles() {
-      return this.hasPerm('APPROVE_ROLES')
-    },
-    canConvertCurrency() {
-      return this.hasPerm('CONVERT_CURRENCY')
-    },
+    canCreateUsers() { return this.hasPerm("CREATE_USERS"); },
+    canViewUsers()   { return this.hasPerm("VIEW_USERS"); },
+    canApproveUsers(){ return this.hasPerm("APPROVE_USERS"); },
+    canViewDealCodeRequests() { return this.hasPerm("VIEW_DEAL_REQUESTS"); },
+    canCreateRoles() { return this.hasPerm("CREATE_ROLES"); },
+    canViewRoles()   { return this.hasPerm("VIEW_ROLES"); },
+    canApproveRoles(){ return this.hasPerm('APPROVE_ROLES'); },
+    canConvertCurrency() { return this.hasPerm('CONVERT_CURRENCY'); },
   },
   methods: {
-    hasPerm (permission) {
+    hasPerm(permission) {
       return this.permissions && this.permissions.includes(permission)
     }
   },
@@ -91,7 +75,6 @@ export default {
       <side-menu title="MAIN MENU" :static-item="true"></side-menu>
 
       <!-- Equipment Menu -->
-      <!--        v-if="canViewUsers"-->
       <side-menu
         title="Equipment"
         icon="toolbox"
@@ -101,7 +84,6 @@ export default {
         @onClick="toggle"
         :active="currentRoute.includes('equipment')"
       >
-
         <b-collapse
           tag="ul"
           class="sub-nav"
@@ -109,7 +91,6 @@ export default {
           accordion="sidebar-menu"
           :visible="currentRoute.includes('equipment')"
         >
-
           <side-menu
             isTag="router-link"
             title="Create Requisition Request"
@@ -119,7 +100,6 @@ export default {
             miniTitle="CU"
             :route="{ to: 'default.createEquipRequest' }"
           ></side-menu>
-
           <side-menu
             isTag="router-link"
             title="View Requisition Requests"
@@ -129,7 +109,6 @@ export default {
             miniTitle="VU"
             :route="{ to: 'default.viewRequests' }"
           ></side-menu>
-
           <side-menu
             isTag="router-link"
             title="View Approvals"
@@ -139,10 +118,8 @@ export default {
             miniTitle="VU"
             :route="{ to: 'default.viewRequestApprovals' }"
           ></side-menu>
-
         </b-collapse>
       </side-menu>
-
 
       <!-- Users Menu -->
       <side-menu
@@ -276,7 +253,7 @@ export default {
         </b-collapse>
       </side-menu>
 
-      <!-- Deal Codes Menu -->
+      <!-- Currency Menu -->
       <side-menu
         v-if="canConvertCurrency"
         title="Currency"
@@ -313,25 +290,26 @@ export default {
 </template>
 
 <style scoped>
-/* Sidebar Enhancement Styles */
+/* ═══════════════════════════════════════════
+   SIDEBAR — Blue Theme: rgba(46, 84, 126)
+═══════════════════════════════════════════ */
 
-/* Main Menu Styling */
 .iq-main-menu {
   padding: 0;
 }
 
-/* Static Menu Items (Section Headers) */
+/* ─── Section Headers ──────────────────── */
 :deep(.nav-item .nav-text.static-item) {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #6b7280;
+  letter-spacing: 1.2px;
+  color: #8aa0ba;
   padding: 20px 24px 8px 24px;
   text-transform: uppercase;
   margin-top: 8px;
 }
 
-/* Main Navigation Items */
+/* ─── Main Nav Items ───────────────────── */
 :deep(.nav-item > .nav-link) {
   padding: 12px 24px;
   margin: 4px 12px;
@@ -342,22 +320,27 @@ export default {
   font-size: 14px;
 }
 
-/* Active Navigation Item */
+/* Active */
 :deep(.nav-item > .nav-link.active) {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9) 0%,
+    rgba(46, 84, 126, 0.7) 50%,
+    rgba(46, 84, 126, 0.5) 100%
+  );
   color: white;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 14px rgba(46, 84, 126, 0.35);
   transform: translateX(4px);
 }
 
-/* Hover State for Navigation Items */
+/* Hover */
 :deep(.nav-item > .nav-link:hover:not(.active)) {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  color: #047857;
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
+  color: #1a3352;
   transform: translateX(4px);
 }
 
-/* Navigation Icons */
+/* ─── Icons ───────────────────────────── */
 :deep(.nav-item .icon svg) {
   width: 20px;
   height: 20px;
@@ -368,11 +351,11 @@ export default {
   filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
 }
 
-/* Sub-navigation Styling */
+/* ─── Sub-navigation ──────────────────── */
 :deep(.sub-nav) {
   padding: 4px 0;
   margin-left: 24px;
-  border-left: 2px solid #e5e7eb;
+  border-left: 2px solid rgba(46, 84, 126, 0.15);
 }
 
 :deep(.sub-nav .nav-item) {
@@ -390,6 +373,7 @@ export default {
   position: relative;
 }
 
+/* Left accent line on sub items */
 :deep(.sub-nav .nav-link::before) {
   content: '';
   position: absolute;
@@ -398,8 +382,13 @@ export default {
   transform: translateY(-50%);
   width: 2px;
   height: 0;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(
+    180deg,
+    rgba(46, 84, 126, 0.9),
+    rgba(46, 84, 126, 0.5)
+  );
   transition: all 0.3s ease;
+  border-radius: 2px;
 }
 
 :deep(.sub-nav .nav-link.active::before) {
@@ -410,22 +399,22 @@ export default {
   height: 60%;
 }
 
-/* Active Sub-navigation Item */
+/* Active sub-item */
 :deep(.sub-nav .nav-link.active) {
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-  color: #047857;
+  background: linear-gradient(135deg, #eef4fb 0%, #dce9f5 100%);
+  color: #1a3352;
   font-weight: 600;
   border-left: 2px solid transparent;
 }
 
-/* Hover State for Sub-navigation */
+/* Hover sub-item */
 :deep(.sub-nav .nav-link:hover:not(.active)) {
-  background: #f9fafb;
-  color: #059669;
+  background: #f0f4f9;
+  color: #2e547e;
   transform: translateX(4px);
 }
 
-/* Caret Icon for Expandable Menus */
+/* ─── Caret Icon ──────────────────────── */
 :deep(.nav-item .right-icon) {
   transition: all 0.3s ease;
 }
@@ -439,36 +428,36 @@ export default {
   filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
 }
 
-/* Horizontal Rule Styling */
+/* ─── HR Divider ──────────────────────── */
 .hr-horizontal {
   margin: 16px 24px;
   border: 0;
-  border-top: 2px solid #f0fdf4;
+  border-top: 2px solid rgba(46, 84, 126, 0.1);
   opacity: 1;
 }
 
-/* Mini Title (When Sidebar is Collapsed) */
+/* ─── Mini Title (Collapsed Sidebar) ──── */
 :deep(.mini-title) {
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background: linear-gradient(135deg, #eef4fb 0%, #e4eff8 100%);
   border-radius: 8px;
   font-size: 11px;
   font-weight: 700;
-  color: #059669;
+  color: #2e547e;
   transition: all 0.3s ease;
 }
 
 :deep(.nav-link.active .mini-title) {
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
 
-/* Badge Styling (if any badges are added) */
+/* ─── Badges ──────────────────────────── */
 :deep(.badge) {
   padding: 4px 8px;
   border-radius: 6px;
@@ -477,55 +466,85 @@ export default {
   margin-left: 8px;
 }
 
-:deep(.badge.badge-success) {
-  background: linear-gradient(135deg, #10b981, #059669);
+:deep(.badge.badge-primary) {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.9),
+    rgba(46, 84, 126, 0.7)
+  );
   color: white;
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 6px rgba(46, 84, 126, 0.3);
 }
 
-/* Scrollbar Styling for Sidebar */
+/* ─── Scrollbar ───────────────────────── */
 :deep(.sidebar-body::-webkit-scrollbar) {
-  width: 6px;
+  width: 5px;
 }
 
 :deep(.sidebar-body::-webkit-scrollbar-track) {
-  background: #f9fafb;
+  background: #f0f4f9;
   border-radius: 10px;
 }
 
 :deep(.sidebar-body::-webkit-scrollbar-thumb) {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  background: linear-gradient(
+    180deg,
+    rgba(46, 84, 126, 0.3),
+    rgba(46, 84, 126, 0.15)
+  );
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 :deep(.sidebar-body::-webkit-scrollbar-thumb:hover) {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(
+    180deg,
+    rgba(46, 84, 126, 0.8),
+    rgba(46, 84, 126, 0.5)
+  );
 }
 
-/* Animation for Menu Items */
+/* ─── Focus / Accessibility ───────────── */
+:deep(.nav-link:focus) {
+  outline: 2px solid rgba(46, 84, 126, 0.5);
+  outline-offset: 2px;
+}
+
+/* ─── Notification Badge ──────────────── */
+:deep(.notification-badge) {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+  animation: notifPulse 2s infinite;
+}
+
+/* ─── Animations ──────────────────────── */
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 :deep(.nav-item) {
   animation: slideIn 0.3s ease-out;
 }
 
-/* Focus State for Accessibility */
-:deep(.nav-link:focus) {
-  outline: 2px solid #10b981;
-  outline-offset: 2px;
+@keyframes notifPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(1.1); }
 }
 
-/* Responsive Adjustments */
+/* ─── Smooth global transitions ───────── */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+/* ─── Responsive ──────────────────────── */
 @media (max-width: 1199px) {
   :deep(.nav-item > .nav-link) {
     padding: 10px 20px;
@@ -549,7 +568,7 @@ export default {
   }
 }
 
-/* Dark Mode Support (if applicable) */
+/* ─── Dark mode ───────────────────────── */
 @media (prefers-color-scheme: dark) {
   :deep(.nav-item > .nav-link:not(.active)) {
     color: #e5e7eb;
@@ -560,56 +579,24 @@ export default {
   }
 
   :deep(.nav-item .nav-text.static-item) {
-    color: #9ca3af;
+    color: #8aa0ba;
+  }
+
+  .hr-horizontal {
+    border-top-color: rgba(46, 84, 126, 0.25);
   }
 }
 
-/* Smooth Transitions */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-}
-
-/* Tooltip Enhancement (if tooltips are used) */
-:deep(.nav-item [data-bs-toggle="tooltip"]) {
-  cursor: pointer;
-}
-
-/* Loading State (if needed) */
+/* ─── Utility states ──────────────────── */
 .sidebar-loading {
   opacity: 0.6;
   pointer-events: none;
 }
 
-/* Empty State Message */
 .sidebar-empty {
   padding: 40px 24px;
   text-align: center;
-  color: #9ca3af;
+  color: #8aa0ba;
   font-size: 13px;
-}
-
-/* Notification Badge on Menu Items */
-:deep(.notification-badge) {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  width: 8px;
-  height: 8px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.1);
-  }
 }
 </style>

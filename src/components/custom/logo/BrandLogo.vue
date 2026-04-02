@@ -1,29 +1,28 @@
 <template>
-  <!--Enhanced Logo with Animation-->
-  <div class="logo-main-enhanced">
-    <div class="logo-wrapper">
-      <!-- Logo Image -->
+  <div class="logo-main">
+    <div class="logo-wrapper" :class="{ 'logo-wrapper--colored': color }">
+      <!-- Logo image -->
       <img
-        :class="`logo-image ${color ? 'text-primary' : ''}`"
-        src="@/assets/images/Kingdom-bank-logo.png"
+        class="logo-image"
+        src="@/assets/images/adventist_logo.png"
         alt="Kingdom Bank Logo"
         width="200"
         height="50"
         loading="lazy"
       />
 
-      <!-- Animated Border Effect -->
-      <div class="logo-border-effect"></div>
+      <!-- Animated gradient border (shown on hover) -->
+      <div class="logo-border-effect" aria-hidden="true"></div>
 
-      <!-- Shine Effect on Hover -->
-      <div class="logo-shine"></div>
+      <!-- Shine sweep (shown on hover) -->
+      <div class="logo-shine" aria-hidden="true"></div>
     </div>
   </div>
-  <!--Logo End-->
 </template>
 
 <script>
 export default {
+  name: 'AppLogo',
   props: {
     color: {
       type: Boolean,
@@ -34,8 +33,8 @@ export default {
 </script>
 
 <style scoped>
-/* Enhanced Logo Container */
-.logo-main-enhanced {
+/* ─── Container ──────────────────────────────── */
+.logo-main {
   position: relative;
   display: flex;
   align-items: center;
@@ -43,54 +42,81 @@ export default {
   padding: 8px;
 }
 
-/* Logo Wrapper with Effects */
+/* ─── Wrapper ────────────────────────────────── */
 .logo-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+  padding: 12px 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(238, 244, 251, 0.75) 100%
+  );
   border-radius: 14px;
   border: 2px solid transparent;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+  box-shadow 0.35s ease,
+  border-color 0.35s ease,
+  background 0.35s ease;
+  box-shadow: 0 4px 14px rgba(46, 84, 126, 0.09);
 }
 
-/* Logo Image Styling */
+/* ─── Hover state ────────────────────────────── */
+.logo-wrapper:hover {
+  transform: scale(1.04);
+  border-color: rgba(46, 84, 126, 0.28);
+  box-shadow: 0 8px 24px rgba(46, 84, 126, 0.18);
+  background: linear-gradient(
+    135deg,
+    rgba(238, 244, 251, 0.95) 0%,
+    rgba(220, 233, 245, 0.8) 100%
+  );
+}
+
+.logo-wrapper:hover .logo-image {
+  filter: brightness(1.04) contrast(1.08);
+}
+
+/* Colored variant (prop: color=true) */
+.logo-wrapper--colored {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 84, 126, 0.08) 0%,
+    rgba(46, 84, 126, 0.04) 100%
+  );
+}
+
+/* ─── Image ──────────────────────────────────── */
 .logo-image {
   position: relative;
   z-index: 2;
   display: block;
   max-width: 100%;
   height: auto;
-  transition: all 0.4s ease;
+  transition: filter 0.35s ease;
   filter: brightness(1) contrast(1.05);
 }
 
-/* Hover Effect for Logo Wrapper */
-.logo-wrapper:hover {
-  transform: scale(1.05);
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
-  background: linear-gradient(135deg, rgba(240, 253, 244, 0.9) 0%, rgba(236, 253, 245, 0.7) 100%);
-}
-
-.logo-wrapper:hover .logo-image {
-  filter: brightness(1.05) contrast(1.1);
-}
-
-/* Animated Border Effect */
+/* ─── Animated gradient border ───────────────── */
+/*
+  Visible only on hover via opacity transition.
+  Uses mask-composite to show only the border area.
+*/
 .logo-border-effect {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   border-radius: 14px;
-  border: 2px solid transparent;
-  background: linear-gradient(135deg, #10b981, #059669, #047857, #10b981);
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    #2e547e,
+    #3d6fa8,
+    #5a8fc8,
+    #2e547e
+  );
   background-size: 300% 300%;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -100,192 +126,115 @@ export default {
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  padding: 2px;
   opacity: 0;
-  transition: opacity 0.4s ease;
-  animation: gradientShift 4s ease infinite;
   pointer-events: none;
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  animation: gradientShift 4s ease infinite;
+  transition: opacity 0.35s ease;
+  z-index: 1;
 }
 
 .logo-wrapper:hover .logo-border-effect {
   opacity: 1;
 }
 
-/* Shine Effect */
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* ─── Shine sweep ────────────────────────────── */
 .logo-shine {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
   background: linear-gradient(
-    45deg,
+    105deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.32) 50%,
     transparent 70%
   );
-  transform: translateX(-100%) translateY(-100%) rotate(45deg);
-  transition: transform 0.6s ease;
+  background-size: 200% 100%;
+  background-position: 200% 0;
   pointer-events: none;
   z-index: 3;
+  transition: background-position 0.65s ease;
 }
 
 .logo-wrapper:hover .logo-shine {
-  transform: translateX(100%) translateY(100%) rotate(45deg);
+  background-position: -200% 0;
 }
 
-/* Primary Color Variant */
-.logo-image.text-primary {
-  filter: brightness(1) contrast(1.1) saturate(1.2);
-}
+/* ─── Optional utility classes ───────────────── */
 
-/* Pulsing Animation (Optional - can be activated with a class) */
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
-  }
-  50% {
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
-  }
-}
-
+/* .logo-wrapper.pulse — subtle breathing shadow */
 .logo-wrapper.pulse {
-  animation: pulse 3s ease-in-out infinite;
+  animation: logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(46, 84, 126, 0.09); }
+  50%       { box-shadow: 0 6px 22px rgba(46, 84, 126, 0.22); }
 }
 
-/* Glow Effect (Optional - can be activated with a class) */
+/* .logo-wrapper.glow — blue ambient glow */
 .logo-wrapper.glow {
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 24px rgba(46, 84, 126, 0.28);
 }
-
 .logo-wrapper.glow::before {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  border-radius: 16px;
-  opacity: 0.2;
+  inset: -3px;
+  background: linear-gradient(135deg, #2e547e, #3d6fa8);
+  border-radius: 17px;
+  opacity: 0.18;
   filter: blur(10px);
   z-index: -1;
   animation: glowPulse 3s ease-in-out infinite;
 }
-
 @keyframes glowPulse {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(0.95);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.05);
-  }
+  0%, 100% { opacity: 0.18; transform: scale(0.96); }
+  50%       { opacity: 0.32; transform: scale(1.04); }
 }
 
-/* Responsive Design */
-@media (max-width: 1199px) {
-  .logo-wrapper {
-    padding: 10px 14px;
-  }
-
-  .logo-image {
-    width: 180px;
-    height: auto;
-  }
-}
-
-@media (max-width: 991px) {
-  .logo-wrapper {
-    padding: 8px 12px;
-  }
-
-  .logo-image {
-    width: 160px;
-    height: auto;
-  }
-}
-
-@media (max-width: 767px) {
-  .logo-wrapper {
-    padding: 6px 10px;
-  }
-
-  .logo-image {
-    width: 140px;
-    height: auto;
-  }
-}
-
-/* Mini Sidebar State */
-:deep(.sidebar-mini) .logo-image {
-  width: 40px;
-  height: auto;
-}
-
-:deep(.sidebar-mini) .logo-wrapper {
-  padding: 8px;
-}
-
-/* Loading State */
-.logo-image.loading {
-  opacity: 0.6;
-  animation: imageLoad 1.5s ease-in-out infinite;
-}
-
-@keyframes imageLoad {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-/* Focus State for Accessibility */
+/* ─── Accessibility ──────────────────────────── */
 .logo-wrapper:focus-within {
-  outline: 2px solid #10b981;
+  outline: 2px solid #2e547e;
   outline-offset: 4px;
 }
 
-/* Print Styles */
+/* ─── Responsive ─────────────────────────────── */
+@media (max-width: 1199px) {
+  .logo-wrapper { padding: 10px 14px; }
+  .logo-image   { width: 180px; }
+}
+
+@media (max-width: 991px) {
+  .logo-wrapper { padding: 8px 12px; }
+  .logo-image   { width: 160px; }
+}
+
+@media (max-width: 767px) {
+  .logo-wrapper { padding: 6px 10px; }
+  .logo-image   { width: 140px; }
+}
+
+/* ─── Mini sidebar ───────────────────────────── */
+:deep(.sidebar-mini) .logo-wrapper { padding: 8px; }
+:deep(.sidebar-mini) .logo-image   { width: 40px; }
+
+/* ─── Print ──────────────────────────────────── */
 @media print {
   .logo-border-effect,
-  .logo-shine {
-    display: none;
-  }
-
-  .logo-wrapper {
-    box-shadow: none;
-    border: 1px solid #ddd;
-  }
+  .logo-shine { display: none; }
+  .logo-wrapper { box-shadow: none; border: 1px solid #d1d9e0; }
 }
 
-/* High Contrast Mode Support */
+/* ─── High contrast ──────────────────────────── */
 @media (prefers-contrast: high) {
-  .logo-wrapper {
-    border: 2px solid currentColor;
-  }
-
-  .logo-border-effect {
-    display: none;
-  }
+  .logo-wrapper        { border: 2px solid currentColor; }
+  .logo-border-effect  { display: none; }
 }
 
-/* Reduced Motion Support */
+/* ─── Reduced motion ─────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .logo-wrapper,
   .logo-image,
@@ -294,30 +243,26 @@ export default {
     animation: none;
     transition: none;
   }
-
-  .logo-wrapper:hover {
-    transform: none;
-  }
+  .logo-wrapper:hover { transform: none; }
 }
 
-/* Dark Mode Support (if applicable) */
+/* ─── Dark mode ──────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   .logo-wrapper {
     background: linear-gradient(
       135deg,
-      rgba(46, 84, 126, 0.95) 0%,
-      rgba(30, 58, 95, 0.85) 100%
+      rgba(26, 51, 82, 0.95) 0%,
+      rgba(46, 84, 126, 0.80) 100%
     );
-    border-color: rgba(46, 84, 126, 0.3);
+    border-color: rgba(90, 143, 200, 0.2);
   }
-
   .logo-wrapper:hover {
     background: linear-gradient(
       135deg,
       rgba(46, 84, 126, 0.9) 0%,
-      rgba(46, 84, 126, 0.7) 50%,
-      rgba(46, 84, 126, 0.5) 100%
+      rgba(61, 111, 168, 0.75) 100%
     );
+    border-color: rgba(90, 143, 200, 0.4);
   }
 }
 </style>

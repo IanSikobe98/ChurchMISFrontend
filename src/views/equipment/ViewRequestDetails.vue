@@ -8,7 +8,9 @@ import store from '@/store'
 import DataTable from '@/components/DataTable.vue'
 
 export default {
+  name: 'ViewRequestDetails',
   components: { DataTable, AppLoader },
+
   data() {
     return {
       tableReady: false,
@@ -20,348 +22,305 @@ export default {
       permissions: [],
       user: {},
       loading: false,
-      quantity: '',
-      event: '',
-      purpose: '',
-      venue: '',
-      returnDate: '',
-      email: '',
-      phone: '',
-      role: '',
-      roles: [],
-      equipmentInfo: [],
-      equipment: {},
-      errors: {},
-      request: {},
-      today: new Date().toISOString().split('T')[0]
+      request: {}
     }
   },
+
   computed: {
-    canCreateEquipmentRequests() {
-      return this.hasPerm('CREATE_USERS')
+    requestStatusBadge() {
+      const id = Number(this.request?.status?.statusId)
+      if (id === 1) return { label: 'Approved',         cls: 'pill-approved' }
+      if (id === 6) return { label: 'Pending Approval', cls: 'pill-pending'  }
+      if (id === 7) return { label: 'Rejected',         cls: 'pill-rejected' }
+      if (id === 0) return { label: 'Inactive',         cls: 'pill-inactive' }
+      return { label: this.request?.status?.statusName || '—', cls: 'pill-default' }
     },
-    canViewUsers() {
-      return this.hasPerm('VIEW_USERS')
-    },
-    columns() {
-      const cols = [
+
+    approvalColumns() {
+      return [
         { title: 'Approver Role', data: 'approverRole.roleName' },
         { title: 'Approver Name', data: 'actionBy.username' },
-        { title: 'Level', data: 'stepLevel' },
-        { title: 'Comments', data: 'comments' },
+        { title: 'Level',         data: 'stepLevel' },
+        { title: 'Comments',      data: 'comments' },
         {
-          title: 'Approval Date', data: 'createdAt',
-          render: function(data) {
-            if(!data){
-              return '';
-            }
-            var a = new Date(data)
-            return a.toISOString().split('T')[0]
-          }
+          title: 'Approval Date',
+          data: 'createdAt',
+          render: (d) => d ? new Date(d).toISOString().split('T')[0] : '—'
         },
-
-
-
         {
           title: 'Status',
           data: 'status',
-          render: function (data) {
+          render(data) {
             const id = Number(data.statusId)
-            if (id === 1) return `<span class="badge bg-success">Approved</span>`
-            if (id === 0) return `<span class="badge bg-danger">Inactive</span>`
-            if (id === 6) return `<span class="badge bg-warning">Pending Approval</span>`
-            if (id === 7) return `<span class="badge bg-dark">Rejected</span>`
-            return data
+            if (id === 1) return `<span class="tbl-badge badge-approved">Approved</span>`
+            if (id === 6) return `<span class="tbl-badge badge-pending">Pending</span>`
+            if (id === 7) return `<span class="tbl-badge badge-rejected">Rejected</span>`
+            if (id === 0) return `<span class="tbl-badge badge-inactive">Inactive</span>`
+            return `<span class="tbl-badge badge-default">${data.statusName}</span>`
           }
-        },
-
-
+        }
       ]
-
-      return cols
     },
 
-    columns1() {
-      const cols = [
-        { title: 'Equipment Number', data: 'equipmentItem.serialNumber' },
-        { title: 'Equipment Name', data: 'equipmentItem.equipment.name' },
+    equipmentColumns() {
+      return [
+        { title: 'Serial Number',    data: 'equipmentItem.serialNumber' },
+        { title: 'Equipment Name',   data: 'equipmentItem.equipment.name' },
         { title: 'Condition Before', data: 'conditionBefore.statusName' },
         {
-          title: 'Date Allocated', data: 'allocatedAt',
-          render: function(data) {
-            if(!data){
-              return '';
-            }
-            var a = new Date(data)
-            return a.toISOString().split('T')[0]
-          }
+          title: 'Date Allocated',
+          data: 'allocatedAt',
+          render: (d) => d ? new Date(d).toISOString().split('T')[0] : '—'
         },
         {
-          title: 'Date Returned', data: 'returnedBy',
-          render: function(data) {
-            if(!data){
-              return '';
-            }
-            var a = new Date(data)
-            return a.toISOString().split('T')[0]
-          }
+          title: 'Date Returned',
+          data: 'returnedBy',
+          render: (d) => d ? new Date(d).toISOString().split('T')[0] : '—'
         },
-
-
-
         {
           title: 'Status',
           data: 'status',
-          render: function (data) {
+          render(data) {
             const id = Number(data.statusId)
-            if (id === 1) return `<span class="badge bg-success">Approved</span>`
-            if (id === 13) return `<span class="badge bg-success">Allocated</span>`
-            if (id === 0) return `<span class="badge bg-danger">Inactive</span>`
-            if (id === 6) return `<span class="badge bg-warning">Pending Approval</span>`
-            if (id === 7) return `<span class="badge bg-dark">Rejected</span>`
-            return data
+            if (id === 1)  return `<span class="tbl-badge badge-approved">Approved</span>`
+            if (id === 13) return `<span class="tbl-badge badge-allocated">Allocated</span>`
+            if (id === 6)  return `<span class="tbl-badge badge-pending">Pending</span>`
+            if (id === 7)  return `<span class="tbl-badge badge-rejected">Rejected</span>`
+            if (id === 0)  return `<span class="tbl-badge badge-inactive">Inactive</span>`
+            return `<span class="tbl-badge badge-default">${data.statusName}</span>`
           }
-        },
-
-
+        }
       ]
-
-      return cols
-    },
-  },
-  mounted() {
-    var jsonData = localStorage.getItem('selectedRequest')
-    console.log('Component mounted2.', jsonData)
-    if (jsonData) {
-      try {
-        this.request = JSON.parse(jsonData)
-        console.log('Parsed Data: ', this.request)
-        // Use parsedData as needed
-      } catch (error) {
-        console.error('Error parsing JSON data: ', error)
-      }
     }
-    this.user = JSON.parse(store.state.user)
-    this.permissions = this.user?.usersPerm
-    // this.fetchEquipmentInfo()
-    this.tableReady = true
-    this.tableReady2 = true
-    this.fetchRequestApprovals(this.request.id)
-    this.fetchEquipment(this.request.id)
   },
+
+  mounted() {
+    const raw = localStorage.getItem('selectedRequest')
+    if (raw) {
+      try { this.request = JSON.parse(raw) } catch (e) { console.error(e) }
+    }
+    this.user        = JSON.parse(store.state.user)
+    this.permissions = this.user?.usersPerm
+    this.tableReady  = true
+    this.tableReady2 = true
+    if (this.request?.id) {
+      this.fetchApprovals(this.request.id)
+      this.fetchEquipment(this.request.id)
+    }
+  },
+
   methods: {
-    hasPerm(permission) {
-      return this.permissions && this.permissions.includes(permission)
-    },
-    viewRequests() {
-      this.$router.push('/viewRequests')
-    },
+    hasPerm(p) { return this.permissions?.includes(p) },
 
-    fetchRequestApprovals(requestId) {
+    fetchApprovals(id) {
       this.loading = true
-      const url = env.apiUrl.baseUrl + env.apiUrl.equipment.getRequestApprovalsByRequest
-
       axios
-        .post(url, { page: 0, size: 10, id: requestId })
-        .then((response) => {
-          const data = response.data
+        .post(env.apiUrl.baseUrl + env.apiUrl.equipment.getRequestApprovalsByRequest, { page: 0, size: 50, id })
+        .then(({ data }) => {
           if (data.responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: data.responseMessage,
-              customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-            })
-            return
+            return Swal.fire({ icon: 'error', title: 'Error', text: data.responseMessage })
           }
-          this.requestApprovals = data.data
+          this.requestApprovals = data.data ?? []
         })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error occurred fetching Approvals',
-            customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-          })
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+        .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'Could not fetch approvals.' }))
+        .finally(() => { this.loading = false })
     },
-    fetchEquipment(requestId) {
-      this.loading = true
-      const url = env.apiUrl.baseUrl + env.apiUrl.equipment.getEquipmentByRequest
 
+    fetchEquipment(id) {
+      this.loading = true
       axios
-        .post(url, { page: 0, size: 10, id: requestId })
-        .then((response) => {
-          const data = response.data
+        .post(env.apiUrl.baseUrl + env.apiUrl.equipment.getEquipmentByRequest, { page: 0, size: 50, id })
+        .then(({ data }) => {
           if (data.responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: data.responseMessage,
-              customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-            })
-            return
+            return Swal.fire({ icon: 'error', title: 'Error', text: data.responseMessage })
           }
-          this.equipmentAllocation = data.data
+          this.equipmentAllocation = data.data ?? []
         })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Error occurred fetching Equipment Information',
-            customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-          })
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    createEquipmentRequest() {
-      if (!this.validateForm()) return
-      this.loading = true
-      this.message = ''
-      var url = env.apiUrl.baseUrl + env.apiUrl.equipment.createEquipmentRequest
-      const token = localStorage.getItem('token')
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      axios
-        .post(url, { equipmentId: this.equipment?.equipment?.id, quantity: this.quantity, event: this.event, purpose: this.purpose, venue: this.venue, returnDate: this.returnDate })
-        .then((response) => {
-          var data = response.data
-          var responseCode = data.responseCode
-          var responseMessage = data.responseMessage
-          if (responseCode !== config.SUCCESS_RESPONSE_CODE) {
-            this.responseMessage = responseMessage
-            this.errorMessage = responseMessage
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: this.responseMessage,
-              customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-            })
-            return
-          }
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: responseMessage,
-            timer: 3000,
-            customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-          })
-          this.$router.push('/viewRequests')
-        })
-        .catch((error) => {
-          console.log('Error is ', error)
-          Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'An error occurred during Requisition of the equipment',
-            customClass: { confirmButton: 'btn btn-success px-4 me-2', cancelButton: 'btn btn-secondary px-4' }
-          })
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    validateForm() {
-      this.errors = {}
-      if (Object.keys(this.equipment).length === 0) {
-        this.errors.equipment = 'Equipment is required.'
-      }
-
-      if (!this.quantity) {
-        this.errors.quantity = 'Quantity is required.'
-      } else if (!config.CURRENCY_REGEX.test(this.quantity)) {
-        this.errors.quantity = 'Invalid Quantity format.'
-      } else if (this.quantity > this.equipment.quantity) {
-        this.errors.quantity = 'Quantity set is more than the available quantity.'
-      }
-
-      if (!this.event) {
-        this.errors.event = 'Event is required.'
-      } else if (!config.TEXT_REGEX.test(this.event)) {
-        this.errors.event = 'Invalid Event Name'
-      }
-
-      if (!this.purpose) {
-        this.errors.purpose = 'Purpose is required.'
-      } else if (!config.TEXT_REGEX.test(this.purpose)) {
-        this.errors.purpose = 'Invalid Purpose Input'
-      }
-
-      if (!this.venue) {
-        this.errors.venue = 'Venue is required.'
-      }
-
-      if (!this.returnDate) {
-        this.errors.returnDate = 'Return date is required.'
-      }
-
-      return Object.keys(this.errors).length === 0
+        .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'Could not fetch equipment.' }))
+        .finally(() => { this.loading = false })
     }
   }
 }
 </script>
 
 <template>
-  <!-- Loader -->
-  <div>
-    <AppLoader v-if="loading" />
-  </div>
+  <div><AppLoader v-if="loading" /></div>
 
-  <!-- Main Content Wrapper -->
-  <div class="main-content-wrapper">
+  <div class="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <div class="form-card">
-          <!-- Card Header -->
-          <div class="form-card-header">
-            <div class="header-actions">
-<!--              <div class="header-icon" @click="$router.go(-1)">-->
-                <button type="button" class="btn btn-outline" @click="$router.go(-1)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-<!--                  <span>Cancel</span>-->
-                </button>
+        <div class="detail-card">
 
-              <div>
-                <h4 class="form-title">Equipment Request Details</h4>
-                <p class="form-subtitle">View Equipment Request Details</p>
+          <!-- ══ HEADER ══ -->
+          <div class="card-header">
+            <div class="header-left">
+              <button class="back-btn" type="button" @click="$router.go(-1)" title="Go back">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                  <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="header-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 12v3m-1.5-1.5h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
               </div>
+              <div>
+                <h4 class="card-title">Equipment Request Details</h4>
+                <p class="card-subtitle">Approval trail and allocated equipment</p>
+              </div>
+            </div>
+            <div v-if="request.status" class="header-right">
+              <span :class="['status-pill', requestStatusBadge.cls]">{{ requestStatusBadge.label }}</span>
             </div>
           </div>
 
-          <!-- Card Body -->
-          <div class="form-card-body">
-            <div class="tabs">
-              <button v-for="tab in tabs" :key="tab" @click="activeTab = tab" :class="['tab-btn', { active: activeTab === tab }]">
+          <!-- ══ SUMMARY STRIP ══ -->
+          <div v-if="request.id" class="summary-strip">
+            <div v-if="request.event" class="summary-cell">
+              <span class="sc-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Event
+              </span>
+              <span class="sc-value">{{ request.event }}</span>
+            </div>
+            <div v-if="request.purpose" class="summary-cell">
+              <span class="sc-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Purpose
+              </span>
+              <span class="sc-value">{{ request.purpose }}</span>
+            </div>
+            <div v-if="request.venue" class="summary-cell">
+              <span class="sc-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Venue
+              </span>
+              <span class="sc-value">{{ request.venue }}</span>
+            </div>
+            <div v-if="request.returnDate" class="summary-cell">
+              <span class="sc-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Return Date
+              </span>
+              <span class="sc-value">{{ request.returnDate }}</span>
+            </div>
+            <div v-if="request.quantity" class="summary-cell">
+              <span class="sc-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+                        stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Quantity
+              </span>
+              <span class="sc-value">{{ request.quantity }}</span>
+            </div>
+          </div>
+
+          <!-- ══ BODY ══ -->
+          <div class="card-body">
+
+            <!-- Tab bar -->
+            <div class="tab-bar">
+              <button
+                v-for="tab in tabs"
+                :key="tab"
+                type="button"
+                :class="['tab-btn', { 'tab-btn--active': activeTab === tab }]"
+                @click="activeTab = tab"
+              >
+                <!-- Approvals icon -->
+                <svg v-if="tab === 'Approvals'" width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <!-- Equipment icon -->
+                <svg v-if="tab === 'Equipment'" width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
                 {{ tab }}
+                <span
+                  v-if="tab === 'Approvals' && requestApprovals.length"
+                  :class="['tab-count', { 'tab-count--active': activeTab === tab }]"
+                >{{ requestApprovals.length }}</span>
+                <span
+                  v-if="tab === 'Equipment' && equipmentAllocation.length"
+                  :class="['tab-count', { 'tab-count--active': activeTab === tab }]"
+                >{{ equipmentAllocation.length }}</span>
               </button>
             </div>
 
-            <div class="tab-content">
-              <div v-if="activeTab === 'Approvals'">
-                <!-- Table Body -->
-                <div class="table-body">
-                  <div class="table-responsive">
-                    <data-table v-if="tableReady" :data="requestApprovals" :columns="columns" :isFooter="true" :striped="false"  />
+            <!-- Tab panels -->
+            <div class="tab-panel">
+
+              <!-- Approvals panel -->
+              <div v-show="activeTab === 'Approvals'">
+                <div v-if="!loading && requestApprovals.length === 0" class="empty-state">
+                  <div class="empty-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                      <path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
                   </div>
+                  <p class="empty-title">No approvals yet</p>
+                  <p class="empty-sub">Approval records will appear once the request is processed.</p>
+                </div>
+                <div v-else class="table-responsive">
+                  <data-table
+                    v-if="tableReady"
+                    :data="requestApprovals"
+                    :columns="approvalColumns"
+                    :isFooter="true"
+                    :striped="false"
+                  />
                 </div>
               </div>
 
-              <div v-if="activeTab === 'Equipment'">
-              <!-- Table Body -->
-              <div class="table-body">
-                <div class="table-responsive">
-                  <data-table v-if="tableReady2" :data="equipmentAllocation" :columns="columns1" :isFooter="true" :striped="false" />
+              <!-- Equipment panel -->
+              <div v-show="activeTab === 'Equipment'">
+                <div v-if="!loading && equipmentAllocation.length === 0" class="empty-state">
+                  <div class="empty-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                      <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                      <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <p class="empty-title">No equipment allocated</p>
+                  <p class="empty-sub">Equipment records will appear once items are assigned.</p>
+                </div>
+                <div v-else class="table-responsive">
+                  <data-table
+                    v-if="tableReady2"
+                    :data="equipmentAllocation"
+                    :columns="equipmentColumns"
+                    :isFooter="true"
+                    :striped="false"
+                  />
                 </div>
               </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -371,433 +330,279 @@ export default {
 </template>
 
 <style scoped>
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+/* ─── Page wrapper ─────────────────────────────── */
+.page-wrapper {
+  min-height: calc(100vh - 360px);
+  padding: 20px 0 60px;
 }
 
-.tab-btn {
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  background: #eee;
-  border-radius: 6px;
-}
-
-.tab-btn.active {
-  background: #007bff;
-  color: white;
-}
-
-/* Main Content Wrapper */
-.main-content-wrapper {
-  min-height: calc(100vh - 280px - 80px);
-  padding-top: 20px;
-  padding-bottom: 60px;
-}
-
-/* Form Card */
-.form-card {
-  background: #fff;
+/* ─── Card ─────────────────────────────────────── */
+.detail-card {
+  background: #ffffff;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(46, 84, 126, 0.08);
   border: 2px solid rgba(46, 84, 126, 0.12);
-  transition: all 0.3s ease;
-  animation: slideInUp 0.4s ease-out;
+  box-shadow: 0 4px 20px rgba(46, 84, 126, 0.08);
+  transition: box-shadow 0.3s, border-color 0.3s;
+  animation: fadeUp 0.4s ease-out both;
+}
+.detail-card:hover {
+  box-shadow: 0 8px 32px rgba(46, 84, 126, 0.13);
+  border-color: rgba(46, 84, 126, 0.2);
 }
 
-.form-card:hover {
-  box-shadow: 0 8px 24px rgba(46, 84, 126, 0.14);
-  border-color: rgba(46, 84, 126, 0.22);
-}
-
-/* Card Header */
-.form-card-header {
-  padding: 28px;
-  border-bottom: 2px solid #eef4fb;
+/* ─── Header ───────────────────────────────────── */
+.card-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #eef4fb 0%, #ffffff 100%);
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
+  padding: 22px 28px;
+  background: linear-gradient(135deg, #eef4fb 0%, #ffffff 100%);
+  border-bottom: 2px solid #eef4fb;
 }
 
-.header-content {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+}
+
+.back-btn {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 2px solid rgba(46, 84, 126, 0.18);
+  background: #ffffff;
+  color: #2e547e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.back-btn:hover {
+  background: #eef4fb;
+  border-color: #2e547e;
+  transform: translateX(-2px);
 }
 
 .header-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(46, 84, 126, 0.15), rgba(46, 84, 126, 0.08));
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(46, 84, 126, 0.14), rgba(46, 84, 126, 0.06));
   color: #2e547e;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.15);
+  box-shadow: 0 3px 10px rgba(46, 84, 126, 0.1);
 }
 
-.form-title {
-  font-size: 22px;
+.card-title {
+  font-size: 19px;
   font-weight: 700;
-  background: linear-gradient(135deg, #1a3352 0%, #2e547e 100%);
+  background: linear-gradient(135deg, #1a3352, #2e547e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 4px;
+  margin: 0 0 3px;
 }
-
-.form-subtitle {
-  font-size: 14px;
-  color: #2e547e;
+.card-subtitle {
+  font-size: 13px;
+  color: #5a7a9e;
   margin: 0;
 }
 
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.view-users-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, rgba(46, 84, 126, 0.9) 0%, rgba(46, 84, 126, 0.7) 50%, rgba(46, 84, 126, 0.5) 100%);
-  border: none;
-  border-radius: 12px;
-  color: white;
+/* Status pill */
+.status-pill {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-size: 12.5px;
   font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.3);
+  letter-spacing: 0.02em;
 }
+.pill-approved { background: rgba(46,84,126,0.1);  color: #1a3352; border: 1.5px solid rgba(46,84,126,0.25); }
+.pill-pending  { background: rgba(245,158,11,0.1); color: #92400e; border: 1.5px solid rgba(245,158,11,0.3); }
+.pill-rejected { background: rgba(239,68,68,0.08); color: #991b1b; border: 1.5px solid rgba(239,68,68,0.2);  }
+.pill-inactive { background: rgba(107,114,128,0.1);color: #374151; border: 1.5px solid rgba(107,114,128,0.2);}
+.pill-default  { background: #f3f4f6; color: #6b7280; border: 1.5px solid #e5e7eb; }
 
-.view-users-btn:hover {
-  background: linear-gradient(135deg, rgba(46, 84, 126, 1) 0%, rgba(46, 84, 126, 0.85) 50%, rgba(46, 84, 126, 0.7) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(46, 84, 126, 0.4);
-}
-
-/* Card Body */
-.form-card-body {
-  padding: 32px 28px;
-}
-
-/* Info Banner — kept blue (was already blue in original) */
-.info-banner {
-  background: linear-gradient(135deg, #eef4fb 0%, #dce9f5 100%);
-  border: 2px solid rgba(46, 84, 126, 0.2);
-  border-radius: 12px;
-  padding: 16px 20px;
+/* ─── Summary strip ────────────────────────────── */
+.summary-strip {
   display: flex;
-  gap: 14px;
-  margin-bottom: 32px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid #eef4fb;
+  background: #fafcff;
 }
-
-.info-banner .info-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #2e547e, #1a3352);
-  color: white;
+.summary-cell {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.info-text {
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 24px;
   flex: 1;
+  min-width: 140px;
+  border-right: 1px solid rgba(46, 84, 126, 0.08);
 }
+.summary-cell:last-child { border-right: none; }
 
-.info-text strong {
+.sc-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8aa0ba;
+}
+.sc-label svg { stroke: #8aa0ba; flex-shrink: 0; }
+
+.sc-value {
+  font-size: 13.5px;
+  font-weight: 600;
   color: #1a3352;
-  font-size: 14px;
-  display: block;
-  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.info-text p {
-  color: #2e547e;
-  font-size: 13px;
-  margin: 0;
+/* ─── Card body ────────────────────────────────── */
+.card-body {
+  padding: 26px 28px;
 }
 
-/* Form Sections */
-.form-section {
-  margin-bottom: 32px;
-  padding: 24px;
-  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
-
-.form-section:hover {
-  border-color: rgba(46, 84, 126, 0.22);
-  background: linear-gradient(135deg, #eef4fb 0%, #ffffff 100%);
-}
-
-.section-header {
+/* ─── Tab bar ──────────────────────────────────── */
+.tab-bar {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-.section-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(46, 84, 126, 0.1), rgba(46, 84, 126, 0.05));
-  color: #2e547e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
-}
-
-/* Form Groups */
-.form-group {
-  margin-bottom: 0;
-}
-
-.form-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.required {
-  color: #ef4444;
-  font-weight: 700;
-}
-
-/* Input Wrapper */
-.input-wrapper {
-  position: relative;
-}
-
-.input-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Modern Input & Select */
-.modern-input,
-.modern-select {
-  width: 100%;
-  padding: 12px 14px 12px 46px;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #1f2937;
-  transition: all 0.2s ease;
-  background: white;
-}
-
-.modern-input:focus,
-.modern-select:focus {
-  border-color: #2e547e;
-  box-shadow: 0 0 0 4px rgba(46, 84, 126, 0.1);
-  outline: none;
-}
-
-.modern-input::placeholder {
-  color: #9ca3af;
-}
-
-.modern-input.is-invalid,
-.modern-select.is-invalid {
-  border-color: #ef4444;
-}
-
-.modern-input.is-invalid:focus,
-.modern-select.is-invalid:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-}
-
-/* Select — updated chevron color to blue */
-.modern-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 40px;
-  cursor: pointer;
-}
-
-.modern-select:focus {
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%232e547e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-/* Error Message */
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #ef4444;
-  font-size: 12px;
-  font-weight: 500;
-  margin-top: 8px;
-}
-
-.error-message svg {
-  flex-shrink: 0;
-  stroke: #ef4444;
-}
-
-/* Form Actions */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 2px solid #eef4fb;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
+  gap: 4px;
+  padding: 5px;
+  background: #f0f4f9;
   border-radius: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  width: fit-content;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
   border: none;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: #5a7a9e;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.tab-btn svg { stroke: currentColor; flex-shrink: 0; }
+.tab-btn:hover { background: rgba(255,255,255,0.65); color: #2e547e; }
+
+.tab-btn--active {
+  background: #ffffff;
+  color: #1a3352;
+  box-shadow: 0 2px 10px rgba(46, 84, 126, 0.14);
+}
+.tab-btn--active svg { stroke: #2e547e; }
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(46, 84, 126, 0.1);
+  color: #2e547e;
+  transition: background 0.2s, color 0.2s;
+}
+.tab-count--active {
+  background: linear-gradient(135deg, rgba(46,84,126,0.9), rgba(46,84,126,0.65));
+  color: #ffffff;
 }
 
-.btn-outline {
-  background: white;
-  border: 2px solid #e5e7eb;
-  color: #6b7280;
+/* ─── Tab panel ────────────────────────────────── */
+.tab-panel { min-height: 180px; }
+
+/* ─── Empty state ──────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 20px;
+  text-align: center;
+}
+.empty-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eef4fb, #dce9f5);
+  border: 2px solid rgba(46, 84, 126, 0.1);
+  color: #5a8fc8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a3352;
+  margin: 0 0 6px;
+}
+.empty-sub {
+  font-size: 13px;
+  color: #8aa0ba;
+  max-width: 300px;
+  line-height: 1.6;
+  margin: 0;
 }
 
-.btn-outline:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #374151;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+/* ─── Table badge overrides ────────────────────── */
+:deep(.tbl-badge) {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+:deep(.badge-approved)  { background: rgba(46,84,126,0.12);  color: #1a3352; }
+:deep(.badge-allocated) { background: rgba(16,185,129,0.12); color: #065f46; }
+:deep(.badge-pending)   { background: rgba(245,158,11,0.12); color: #92400e; }
+:deep(.badge-rejected)  { background: rgba(239,68,68,0.1);   color: #991b1b; }
+:deep(.badge-inactive)  { background: rgba(107,114,128,0.1); color: #374151; }
+:deep(.badge-default)   { background: #f3f4f6; color: #6b7280; }
+
+/* ─── Animation ────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, rgba(46, 84, 126, 0.9) 0%, rgba(46, 84, 126, 0.7) 50%, rgba(46, 84, 126, 0.5) 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(46, 84, 126, 0.3);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, rgba(46, 84, 126, 1) 0%, rgba(46, 84, 126, 0.85) 50%, rgba(46, 84, 126, 0.7) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(46, 84, 126, 0.4);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-/* Animation */
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
+/* ─── Responsive ───────────────────────────────── */
 @media (max-width: 768px) {
-  .main-content-wrapper {
-    padding-top: 16px;
-    padding-bottom: 40px;
-  }
-
-  .form-card-header {
-    padding: 20px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-content {
-    width: 100%;
-  }
-  .header-actions {
-    width: 100%;
-  }
-
-  .view-users-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .form-card-body {
-    padding: 24px 20px;
-  }
-  .form-section {
-    padding: 20px;
-  }
-
-  .form-actions {
-    flex-direction: column-reverse;
-  }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .info-banner {
-    flex-direction: column;
-  }
+  .page-wrapper  { padding: 14px 0 40px; }
+  .card-header   { padding: 16px 18px; }
+  .summary-strip { flex-direction: row; overflow-x: auto; flex-wrap: nowrap; }
+  .summary-cell  { min-width: 130px; padding: 14px 16px; }
+  .card-body     { padding: 20px 16px; }
+  .tab-bar       { width: 100%; }
+  .tab-btn       { flex: 1; justify-content: center; }
 }
 
-@media (max-width: 576px) {
-  .form-title {
-    font-size: 18px;
-  }
-  .header-icon {
-    width: 48px;
-    height: 48px;
-  }
-  .section-icon {
-    width: 36px;
-    height: 36px;
-  }
+@media (max-width: 480px) {
+  .card-title   { font-size: 16px; }
+  .header-icon  { width: 40px; height: 40px; }
+  .tab-btn      { padding: 9px 12px; font-size: 12.5px; }
 }
 </style>
